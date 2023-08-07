@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\CustomModelNotFoundException;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -62,10 +63,19 @@ Route::get('users',function(){
     return response()->json($users,200);
 });
 
+Route::get('user/{id}',function($id){
+    $user = User::where('id',$id)->first();
+    if(!$user){
+        throw new CustomModelNotFoundException('User',$id);
+    }
+    dd($user);
+});
+
 Route::group(['middleware'=>'auth'],function(){
     Route::get('posts/create',[PostController::class,'create'])->name('posts.create');
     Route::post('posts/create',[PostController::class,'store'])->name('posts.store');
     Route::get('posts/check',[PostController::class,'check'])->name('posts.check');
+    Route::get('/posts/{id}',[PostController::class,'show']);
 });
 
 // Route::domain('{username}.' . env('APP_URL'))->group(function () {

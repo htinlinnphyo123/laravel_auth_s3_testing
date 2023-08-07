@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\Post;
+use App\Services\PostService;
+use Aws\Api\Service;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\RelationNotFoundException;
 
 class PostController extends Controller
 {
@@ -48,6 +52,12 @@ class PostController extends Controller
         }else{
             dd(false);
         }
+    }
+
+    public function show($id)
+    {
+        $post = (new PostService)->getUserById($id);
+        dd($post);
     }
 
 }

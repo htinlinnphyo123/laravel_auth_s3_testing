@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\PostService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +25,12 @@ Route::middleware('auth:sanctum','abilities:can-update,can-create')->get('/user'
     return response()->json($token,200);
 
 });
+
+Route::get('posts/{id}',function($id){
+    $post = (new PostService)->getUserById($id);
+    return response()->json($post,200);
+});
+
+
 
 // 20|2gz8NNBK3ARMcmEBzxeHviDCiBh4UjUajJloH1oI
