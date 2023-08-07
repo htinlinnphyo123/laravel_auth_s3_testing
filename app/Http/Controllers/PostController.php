@@ -24,31 +24,38 @@ class PostController extends Controller
             'image' => 'mimes:jpg,bmp,png',
         ])->validate();
 
-        if($request->hasFile('image')){
-            $orgImage = $request->file('image');
-            dd($orgImage);
-            $newImage = Image::make($orgImage)->resize(300,200);
-            dd($orgImage,$newImage);
-        }
-
-
         // if($request->hasFile('image')){
-        //     $file = $request->file('image');
-        //     $file_path = 'images/' . uniqid() . $file->getClientOriginalExtension();
-        //     Storage::disk('s3')->put($file_path, file_get_contents($file));
-        //     $fileModel = new File();
-        //     $fileModel->fie_path = $file_path;
-        //     $fileModel->save();
-        //     dd('success');
+        //     $orgImage = $request->file('image');
+        //     dd($orgImage);
+        //     $newImage = Image::make($orgImage)->resize(300,200);
+        //     dd($orgImage,$newImage);
         // }
+
+
+        if($request->hasFile('image')){
+            $file = $request->file('image');
+            $file_path = 'images/' . uniqid() . '_' . $file->getClientOriginalName();
+            $success = Storage::disk('s3')->put($file_path,file_get_contents($file));
+            if ($success) {
+                $fileModel = new File();
+                $fileModel->fie_path = $file_path;
+                $fileModel->save();
+                dd('success');
+            } else {
+                dd('fail');
+            }
+        }
 
     }
 
     public function check()
     {
-        $getFilePath = File::find(2)->fie_path;
+        $getFilePath = File::find(8)->fie_path;
         if(Storage::disk('s3')->exists($getFilePath)){
-            dd(true);
+            // dd(true);
+            $imageUrl = Storage::disk('s3')->url($getFilePath);
+            // dd($imageUrl);
+            return view('posts.show',['image'=>$imageUrl]);
         }else{
             dd(false);
         }
@@ -57,6 +64,7 @@ class PostController extends Controller
     public function show($id)
     {
         $post = (new PostService)->getUserById($id);
+
         dd($post);
     }
 

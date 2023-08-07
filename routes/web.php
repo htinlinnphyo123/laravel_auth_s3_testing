@@ -1,6 +1,5 @@
 <?php
 
-use App\Exceptions\CustomModelNotFoundException;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -8,11 +7,14 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ProfileController;
+use App\Exceptions\CustomModelNotFoundException;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\PostController;
+use App\Mail\PodcastCreated;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +72,11 @@ Route::get('user/{id}',function($id){
     }
     dd($user);
 });
+
+Route::get('send/mail',function(){
+    $user = Auth::user();
+    Mail::to($user->email)->send(new PodcastCreated('Manchester United'));
+})->middleware('auth');
 
 Route::group(['middleware'=>'auth'],function(){
     Route::get('posts/create',[PostController::class,'create'])->name('posts.create');
