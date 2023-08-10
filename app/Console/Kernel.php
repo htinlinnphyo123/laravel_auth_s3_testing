@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Models\User;
+use App\Mail\PodcastCreated;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // $schedule->call(function(){
+        //     $user = User::find(35);
+        //     Mail::to($user->email)->send(new PodcastCreated('Manchester United'));
+        // })->everyMinute();
     }
 
     /**

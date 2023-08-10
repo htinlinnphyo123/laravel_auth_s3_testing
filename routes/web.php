@@ -78,6 +78,18 @@ Route::get('send/mail',function(){
     Mail::to($user->email)->send(new PodcastCreated('Manchester United'));
 })->middleware('auth');
 
+Route::get('/admin',function(){
+    return 'hello i am admin';
+})->middleware('checkRole:admin');
+
+Route::get('/user',function(){
+    return 'hello i am user';
+})->middleware('checkRole:user');
+
+Route::get('/manager',function(){
+    return 'hello i am manager';
+})->middleware('checkRole:manager');
+
 Route::group(['middleware'=>'auth'],function(){
     Route::get('posts/create',[PostController::class,'create'])->name('posts.create');
     Route::post('posts/create',[PostController::class,'store'])->name('posts.store');
